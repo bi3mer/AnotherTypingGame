@@ -1,5 +1,6 @@
 const characters = 'abcdefghijklmnopqrstuvwxyz';
-let wordsTyped, timeElapsed, word, timer = null, timeVal, allowCapitals;
+let state, wordIndex, wordsTyped, timeElapsed, word, timer = null, timeVal, allowCapitals;
+state = 'menu';
 
 function currentTime() {
   return (new Date()).getTime();
@@ -20,10 +21,13 @@ function generateNonsenseWord(size) {
 }
 
 function setUpNextWord() {
+  document.getElementById('words').value = '';
+
   if(timer !== null) {
     clearInterval(timer);
   }
 
+  wordIndex = 0;
   timeVal = 5;
   document.getElementById('timer').innerText = timeVal;
 
@@ -43,8 +47,8 @@ function setUpNextWord() {
 };
 
 function runGame() {
+  state = 'game';
   allowCapitals = document.getElementById('allowCapitals').checked;
-  console.log(allowCapitals);
   timeElapsed = 0;
   wordsTyped = -1;
 
@@ -53,6 +57,7 @@ function runGame() {
 }
 
 function endGame() {
+  state = 'end';
   if(timer !== null) {
     clearInterval(timer);
   }
@@ -77,3 +82,30 @@ document.getElementById('restartButton').onclick = () => {
 
   runGame();
 };
+
+document.getElementById('words').oninput = (data) => {
+  if(word[wordIndex] === data.data) {
+    ++wordIndex;
+    if(wordIndex >= word.length) {
+      setUpNextWord();
+    }
+  } else {
+    endGame();
+  }
+};
+
+document.addEventListener('keypress', (key) => {
+  if(key.key === 'Enter') {
+    if(state === 'menu') {
+      document.getElementById('menu').style.display = "none";
+      document.getElementById('game').style.display = "";
+
+      runGame();
+    } else if(state === 'end') {
+      document.getElementById('end').style.display = "none";
+      document.getElementById('game').style.display = "";
+
+      runGame();
+    }
+  }
+});
