@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background-color:#333333;
+      }
+      </style>
+      <title>Typing Game</title>
+  </head>
+  <body style="color:white">
+    <center>
+      <div id="menu">
+        <h1>
+          Another Typing Game
+        </h1>
+        <p>
+          Type each non-sense word as quickly as possible without making a single error!
+        </p>
+        <input type="checkbox" id="allowCapitals">
+        <label for="allowCapitals">Allow Capital Letters</label>
+        <br/>
+        <br/>
+        <button id="startButton">
+          Start
+        </button>
+      </div>
+
+      <div id="game" style="display: none;"> 
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <h2 id="timer"> </h2>
+        <p id="textHere"> </p>
+        <input type="text" id="words" style="text-align: center; font-size: 18pt;">
+      </div>
+      
+      <div id="end" style="display: none;">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <p id="endResults">
+        </p>
+        <button id="restartButton">
+          Restart
+        </button>
+      </div>
+
+    </center>
+
+    <script type="text/javascript" src="./main.js"></script>
+  </body>
+</html>
