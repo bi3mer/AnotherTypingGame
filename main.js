@@ -2,10 +2,21 @@ const characters = 'abcdefghijklmnopqrstuvwxyz';
 let state, wordIndex, wordsTyped, timeElapsed, word, timer = null, timeVal, allowCapitals;
 state = 'menu';
 
-function currentTime() {
-  return (new Date()).getTime();
-}
+// use cookie to auto-select use capitals
+(() => {
+  const cookies = document.cookie.split(';');
+  for(let cookie of cookies) {
+    console.log(typeof cookie);
+    if(cookie.includes('capitals')) {
+      allowCapitals = cookie.split('=')[1] === 'true' ? true : false;
+      document.getElementById('allowCapitals').checked = allowCapitals;
+    }
+  }
+})();
 
+
+// Generates a nonsense words. global for allow capitals defines whether or not
+// a character is converted to upper case. 50% chance hardcoded into code.
 function generateNonsenseWord(size) {
   let string = '';
   for(var i = 0; i < size; ++i) {
@@ -20,6 +31,8 @@ function generateNonsenseWord(size) {
   return string;
 }
 
+// update UI, remove timer if it exists and create a new one, generate the word
+// that the user has to type, and update UI.
 function setUpNextWord() {
   document.getElementById('words').value = '';
 
@@ -46,16 +59,21 @@ function setUpNextWord() {
   document.getElementById('textHere').innerText = word;
 };
 
+// state update, UI update, global variable update, and then start the game.
 function runGame() {
   state = 'game';
-  allowCapitals = document.getElementById('allowCapitals').checked;
   timeElapsed = 0;
   wordsTyped = -1;
+
+  allowCapitals = document.getElementById('allowCapitals').checked; 
+  document.cookie = `capitals=${allowCapitals};`;
 
   document.getElementById('words').focus();
   setUpNextWord();
 }
 
+// Will update state, end timer, then make UI updates including putting in the
+// player's results from game play.
 function endGame() {
   state = 'end';
   if(timer !== null) {
@@ -69,6 +87,7 @@ function endGame() {
   document.getElementById('end').style.display = "";
 }
 
+// on click to start button in start menu, UI updates and then state update.
 document.getElementById('startButton').onclick = () => {
   document.getElementById('menu').style.display = "none";
   document.getElementById('game').style.display = "";
@@ -76,6 +95,7 @@ document.getElementById('startButton').onclick = () => {
   runGame();
 };
 
+// On click to restart button, UI updates and then state updates.
 document.getElementById('restartButton').onclick = () => {
   document.getElementById('end').style.display = "none";
   document.getElementById('game').style.display = "";
@@ -83,6 +103,9 @@ document.getElementById('restartButton').onclick = () => {
   runGame();
 };
 
+// When a character is input into the words input field, this will auto-check
+// whether or not the key is valid and either allow the user to continue 
+// typing or end the game.
 document.getElementById('words').oninput = (data) => {
   if(word[wordIndex] === data.data) {
     ++wordIndex;
@@ -94,6 +117,8 @@ document.getElementById('words').oninput = (data) => {
   }
 };
 
+// On key press for enter, the user will auto play the game if either in the menu
+// or end game state.
 document.addEventListener('keypress', (key) => {
   if(key.key === 'Enter') {
     if(state === 'menu') {
